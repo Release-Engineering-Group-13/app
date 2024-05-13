@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Phishing Detection</title>
+	<script src="script.js" defer></script>
+</head>
+<body>
+    <h1>Phishing Detection</h1>
+    
+     <form onsubmit="sendRequest(); return false;">
+        <label for="inputText">Enter Text:</label>
+        <input type="text" id="inputText">
+        <button type="submit">Submit</button>
+    </form>
+    
+   <label for="responseText">Response:</label>
+   <textarea id="responseText" rows="4" cols="50" readonly></textarea>
+
+</body>
+</html>
