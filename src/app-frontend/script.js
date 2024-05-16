@@ -2,7 +2,7 @@ function sendRequest() {
     // Get the text from the input field
     var inputText = document.getElementById('inputText').value;
 	
-	var apiUrl = 'http://127.0.0.1:8080/predict/?input=' + encodeURIComponent(inputText);
+	var apiUrl = 'http://localhost:8081/get_prediction?input=' + encodeURIComponent(inputText);
 
     // Make a GET request to the API
     fetch(apiUrl)

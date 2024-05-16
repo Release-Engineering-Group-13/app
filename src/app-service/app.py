@@ -1,19 +1,25 @@
 from flask import Flask, jsonify, request
 import requests
 from flasgger import Swagger
+import json
 #from version_util import VersionUtil
 
 app = Flask(__name__)
 swagger = Swagger(app)
 
-@app.route('/predict', methods =['GET'])    
+@app.route('/get_prediction', methods =['GET'])    
 def predict ():
     """
     Queries model-service to get prediction
     """
-    response = requests.get("0.0.0.0:8080/predict").json()
-    print(response)
-    return jsonify(response)
+    link_text = request.args.get("input")
+    link = {"link": f"{link_text}"}
+   
+    headers = {"Content-Type": "application/json", "accept": "application/json"}
+    
+    response = requests.post("http://localhost:8080/predict", json=link, headers=headers)
+
+    return jsonify(response.text)
     
 
 if __name__ == '__main__':
