@@ -1,8 +1,8 @@
 FROM python:3.10
 WORKDIR /app
-COPY ../../requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY . /app
+COPY src/app-service /app
 EXPOSE 8081
 ENTRYPOINT ["python"]
 CMD ["app.py"]
