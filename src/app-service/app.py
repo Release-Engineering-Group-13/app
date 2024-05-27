@@ -17,7 +17,7 @@ def predict ():
    
     headers = {"Content-Type": "application/json", "accept": "application/json"}
     
-    response = requests.post("http://localhost:8080/predict", json=link, headers=headers)
+    response = requests.post("http://host.docker.internal:8080/predict", json=link, headers=headers)
 
     return jsonify(response.text)
     

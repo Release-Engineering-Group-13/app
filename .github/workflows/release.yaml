@@ -1,31 +1,49 @@
-# This is a basic workflow to help you get started with Actions
-
-name: release
-
-# Controls when the workflow will run
+name: Release
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install dependencies
+      - name: Parse version info from tag
         run: |
-          pip install -r requirements.txt
+          VERSION=${GITHUB_REF:11}
+          MAJOR=$(echo "$VERSION" | cut -d . -f 1)
+          MINOR=$(echo "$VERSION" | cut -d . -f 2)
+          PATCH=$(echo "$VERSION" | cut -d . -f 3)
+          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "version_major=$MAJOR" >> $GITHUB_ENV
+          echo "version_minor=$MINOR" >> $GITHUB_ENV
+          echo "version_patch=$PATCH" >> $GITHUB_ENV
+      
+      - name: Login to Github registry
+        run: echo "${{ github.token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Convert repository name to lowercase
+        run: |
+          echo "REPO_LC=$(echo $REPO | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+        env:
+          REPO: ${{ github.repository }}
+
+      - name: Build, tag, and push Docker images for frontend and backend
+        run: | 
+          FRONTEND_IMG=ghcr.io/${{ env.REPO_LC }}/frontend
+          BACKEND_IMG=ghcr.io/${{ env.REPO_LC }}/backend
+
+          docker build \
+            -t $FRONTEND_IMG:${{ env.version }} \
+            -t $FRONTEND_IMG:${{ env.version_major }}.${{ env.version_minor }}.latest \
+            -t $FRONTEND_IMG:${{ env.version_major }}.latest \
+            -t $FRONTEND_IMG:latest \
+            -f src/app-frontend/Dockerfile src/app-frontend
+          docker push --all-tags $FRONTEND_IMG
+
+          docker build \
+            -t $BACKEND_IMG:${{ env.version }} \
+            -t $BACKEND_IMG:${{ env.version_major }}.${{ env.version_minor }}.latest \
+            -t $BACKEND_IMG:${{ env.version_major }}.latest \
+            -t $BACKEND_IMG:latest \
+            -f src/app-service/Dockerfile .
+          docker push --all-tags $BACKEND_IMG
