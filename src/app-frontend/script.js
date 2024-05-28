@@ -10,13 +10,20 @@ function sendRequest() {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        return response.text();
+        return response.json();  
     })
     .then(data => {
         // Display the response in the responseText textarea
-        document.getElementById('responseText').value = data;
+        if (data.prediction == 1) {
+            document.getElementById('responseText').value = 'This is a phishing URL!! \nPlease do not visit this URL';
+        }
+        else {
+            document.getElementById('responseText').value = 'This looks like a legitimate URL!! \ntry this URL at your own risk';
+        }
     })
     .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
+        document.getElementById('responseText').value = 'There was a problem with the fetch operation';
     });
+  
 }
