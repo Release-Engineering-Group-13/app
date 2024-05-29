@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Phishing Link Detection</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mt-5">Phishing Link Detection</h1>
+      <form method="post">
+        <div class="form-group">
+          <label for="link">Enter a link to evaluate:</label>
+          <input type="text" class="form-control" id="link" name="link" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      {% if prediction is not none %}
+      <div class="mt-4">
+        <h3>Prediction Result: {{ 'Legitimate' if prediction == 1 else 'Phishing' }}</h3>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
