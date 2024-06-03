@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, request, render_template
 import requests
 from flasgger import Swagger
@@ -9,6 +10,9 @@ from flask_cors import CORS
 app = Flask(__name__)
 swagger = Swagger(app)
 CORS(app)  # This will enable CORS for all routes
+
+
+response_url = os.environ.get("MODEL_SERVICE_URL", "http://host.docker.internal:8080/predict")
 
 
 @app.route('/get_prediction', methods=['GET'])
@@ -24,7 +28,7 @@ def predict():
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     
     try:
-        response = requests.post("http://host.docker.internal:8080/predict", json=link, headers=headers, timeout=5)
+        response = requests.post(response_url, json=link, headers=headers, timeout=5)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
@@ -37,7 +41,7 @@ def index():
     prediction = None
     if request.method == 'POST':
         link = request.form['link']
-        response = requests.post('http://host.docker.internal:8080/predict', json={'link': link})
+        response = requests.post(response_url, json={'link': link})
         if response.status_code == 200:
             prediction = response.json().get('Prediction')
             print(prediction)
