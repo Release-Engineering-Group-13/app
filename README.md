@@ -8,8 +8,7 @@ The frontend is a simple HTML/JSS that querries the result from the app-service 
 
 ### environment veriables
 The frontend has the following environment options:
-- ENVIRONMENT= docker - For the docker compose setup
-- ENVIRONMENT= kubernetes - For the kubernetes setup
+- API_URL - To change the app-service URL
 
 
 ## app-service
