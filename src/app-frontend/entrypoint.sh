@@ -3,9 +3,9 @@
 # Set the default environment to production if not provided
 API_URL=${API_URL:-http://localhost:8081}
 
-ENVIRONMENT=${ENVIRONMENT:-standard}
+LAYOUT=${LAYOUT:-standard}
 
-case "$ENVIRONMENT" in
+case "$LAYOUT" in
   standard)
     cp /usr/share/nginx/html/index.standard.html /usr/share/nginx/html/index.html
     cp /usr/share/nginx/html/script.standard.js /usr/share/nginx/html/script.js
@@ -15,7 +15,7 @@ case "$ENVIRONMENT" in
     cp /usr/share/nginx/html/script.colorfull.js /usr/share/nginx/html/script.js
     ;;
   *)
-    echo "Unknown environment: $ENVIRONMENT"
+    echo "Unknown environment: $LAYOUT"
     exit 1
     ;;
 esac

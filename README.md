@@ -9,6 +9,7 @@ The frontend is a simple HTML/JSS that querries the result from the app-service 
 ### environment veriables
 The frontend has the following environment options:
 - API_URL - To change the app-service URL
+- LAYOUT - choose the layout of the frontend, the options are "standard" and "colorfull"
 
 
 ## app-service
