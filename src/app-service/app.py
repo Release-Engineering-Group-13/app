@@ -7,6 +7,9 @@ import sys
 from flask_cors import CORS
 #from version_util import VersionUtil
 
+from REMLA_Test_Lib_version import VersionUtil
+
+
 app = Flask(__name__)
 swagger = Swagger(app)
 CORS(app)  # This will enable CORS for all routes
@@ -14,6 +17,16 @@ CORS(app)  # This will enable CORS for all routes
 
 response_url = os.environ.get("MODEL_SERVICE_URL", "http://host.docker.internal:8080/predict")
 
+@app.route('/get_version', methods=['GET'])
+def version():
+    """
+    Returns the version of the service
+    ---
+    responses:
+      200:
+        description: Version of the service
+    """
+    return jsonify({"version": VersionUtil.VersionUtil.get_version()})
 
 @app.route('/get_prediction', methods=['GET'])
 def predict():

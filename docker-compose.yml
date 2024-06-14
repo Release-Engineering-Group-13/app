@@ -9,7 +9,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      API_URL: "http://localhost:8081/get_prediction"
+      API_URL: "http://localhost:8081"
 
   backend:
     build:
