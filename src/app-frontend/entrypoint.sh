@@ -1,21 +1,11 @@
 #!/bin/sh
 
 # Set the default environment to production if not provided
-ENVIRONMENT=${ENVIRONMENT:-docker}
+API_URL=${API_URL:-http://localhost:8081/get_prediction}
 
-# Determine the JS file to use based on the environment variable
-case "$ENVIRONMENT" in
-  docker)
-    cp /usr/share/nginx/js/script.docker.js /usr/share/nginx/html/script.js
-    ;;
-  kubernetes)
-    cp /usr/share/nginx/js/script.kubernetes.js /usr/share/nginx/html/script.js
-    ;;
-  *)
-    echo "Unknown environment: $ENVIRONMENT"
-    exit 1
-    ;;
-esac
+# Replace the environment variable in the JS file
+sed -i "s|{{API_URL}}|$API_URL|g" /usr/share/nginx/html/script.js
+
 
 # Start nginx
 exec nginx -g 'daemon off;'
