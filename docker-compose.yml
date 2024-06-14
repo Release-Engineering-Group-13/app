@@ -10,6 +10,7 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       API_URL: "http://localhost:8081"
+      ENVIRONMENT: "colorfull"
 
   backend:
     build:
