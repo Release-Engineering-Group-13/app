@@ -46,7 +46,7 @@ jobs:
             -t $FONRTEND_IMG_COLORFULL:${{ env.version_major }}.${{ env.version_minor }}.latest \
             -t $FONRTEND_IMG_COLORFULL:${{ env.version_major }}.latest \
             -t $FONRTEND_IMG_COLORFULL:latest \
-            -f src/app-service/Dockerfile.colorfull src/app-frontend
+            -f src/app-frontend/Dockerfile.colorfull src/app-frontend
 
           docker build \
             -t $BACKEND_IMG:${{ env.version }} \
