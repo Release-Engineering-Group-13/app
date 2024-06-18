@@ -47,6 +47,7 @@ jobs:
             -t $FONRTEND_IMG_COLORFULL:${{ env.version_major }}.latest \
             -t $FONRTEND_IMG_COLORFULL:latest \
             -f src/app-frontend/Dockerfile.colorfull src/app-frontend
+          docker push --all-tags $FONRTEND_IMG_COLORFULL
 
           docker build \
             -t $BACKEND_IMG:${{ env.version }} \
