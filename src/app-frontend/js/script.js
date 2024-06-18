@@ -1,8 +1,8 @@
 function sendRequest() {
     // Get the text from the input field
     var inputText = document.getElementById('inputText').value;
-	
-	var apiUrl = '{{API_URL}}/get_prediction?input=' + encodeURIComponent(inputText);
+
+    var apiUrl = '{{API_URL}}/get_prediction?input=' + encodeURIComponent(inputText);
 
     // Make a GET request to the API
     fetch(apiUrl)
@@ -10,15 +10,17 @@ function sendRequest() {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        return response.json();  
+        return response.json();  // parse the JSON from the response
     })
     .then(data => {
+        console.log(data);
         // Display the response in the responseText textarea
-        if (data.prediction == 1) {
-            document.getElementById('responseText').value = 'This is a phishing URL!! \nPlease do not visit this URL';
+        if (data.Prediction == 1) {
+            // set the response text to the data.Link with the correct message
+            document.getElementById('responseText').value = 'This looks like a malicious URL!! \nDo not try this URL: ' + data.Link;
         }
         else {
-            document.getElementById('responseText').value = 'This looks like a legitimate URL!! \ntry this URL at your own risk';
+            document.getElementById('responseText').value = 'This looks like a legitimate URL!! \nSafely try this URL: ' + data.Link;
         }
     })
     .catch(error => {
@@ -38,16 +40,15 @@ function versionRequest() {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        return response.json();  
+        return response.json();  // parse the JSON from the response
     })
     .then(data => {
         console.log('API Version: ' + data.version);
         // Display the response in the responseText textarea
-        document.getElementById('versionText').textContent  = data.version;
+        document.getElementById('versionText').textContent = data.version;
     })
     .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
-        document.getElementById('versionText').textContent  = 'There was a problem with the version fetch operation';
+        document.getElementById('versionText').textContent = 'There was a problem with the version fetch operation';
     });
-
 }

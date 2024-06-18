@@ -8,11 +8,9 @@ LAYOUT=${LAYOUT:-standard}
 case "$LAYOUT" in
   standard)
     cp /usr/share/nginx/html/index.standard.html /usr/share/nginx/html/index.html
-    cp /usr/share/nginx/html/script.standard.js /usr/share/nginx/html/script.js
     ;;
   colorfull)
     cp /usr/share/nginx/html/index.colorfull.html /usr/share/nginx/html/index.html
-    cp /usr/share/nginx/html/script.colorfull.js /usr/share/nginx/html/script.js
     ;;
   *)
     echo "Unknown environment: $LAYOUT"
