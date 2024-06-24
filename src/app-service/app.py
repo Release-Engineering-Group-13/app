@@ -5,6 +5,8 @@ from flasgger import Swagger
 import json
 import sys
 from flask_cors import CORS
+from prometheus_client import Counter, Histogram
+import time
 #from version_util import VersionUtil
 
 from REMLA_Test_Lib_version import VersionUtil
@@ -14,8 +16,16 @@ app = Flask(__name__)
 swagger = Swagger(app)
 CORS(app)  # This will enable CORS for all routes
 
+REQUEST_COUNT = Counter('num_requests', 'Total number of prediction requests')
+HTTP_STATUS_COUNT = Counter('num_bad_requests', 'Count per HTTP status code', ['status'])
+REQUEST_TIME = Histogram('prediction_time', 'Total time taken to evaluate a url')
+
 
 response_url = os.environ.get("MODEL_SERVICE_URL", "http://host.docker.internal:8080/predict")
+
+@app.route('/metrics')
+def metrics():
+    return generate_latest()
 
 @app.route('/get_version', methods=['GET'])
 def version():
@@ -35,7 +45,9 @@ def predict():
     """
     link_text = request.args.get("input")
     if not link_text:
-        return jsonify({"error": "No input provided"}), 400
+        status = 400
+        HTTP_STATUS_COUNT.labels(status=status).inc()
+        return jsonify({"error": "No input provided"}), status
     
     link = {"link": link_text}
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -44,21 +56,27 @@ def predict():
         response = requests.post(response_url, json=link, headers=headers, timeout=5)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
-        return jsonify({"error": str(e)}), 500
+        status = 500
+        HTTP_STATUS_COUNT.labels(status=status).inc()
+        return jsonify({"error": str(e)}), status
 
     # Return the JSON response
+    status = 200
+    HTTP_STATUS_COUNT.labels(status=status).inc()
     return jsonify(response.json())
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    start_time = time.time()
     prediction = None
     if request.method == 'POST':
         link = request.form['link']
         response = requests.post(response_url, json={'link': link})
         if response.status_code == 200:
             prediction = response.json().get('Prediction')
-            print(prediction)
-    
+            print("prediction: ", prediction)
+    response_time = time.time() - start_time
+    REQUEST_TIME.observe(response_time)
     return render_template('index.html', prediction=prediction)
     
 
