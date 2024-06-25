@@ -6,3 +6,4 @@ scikit-learn==1.4.2
 tensorflow==2.16.1
 REMLA-Test-Lib-version
 flask_cors
+prometheus_client==0.20.0
