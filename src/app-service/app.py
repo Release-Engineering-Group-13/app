@@ -5,8 +5,9 @@ from flasgger import Swagger
 import json
 import sys
 from flask_cors import CORS
-from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import Counter, Gauge, Histogram, generate_latest, CONTENT_TYPE_LATEST
 import time
+import psutil 
 #from version_util import VersionUtil
 
 from REMLA_Test_Lib_version import VersionUtil
@@ -20,6 +21,8 @@ REQUEST_COUNT = Counter('num_prediction_requests', 'Total number of prediction r
 INDEX_REQUEST_COUNT = Counter('num_index_requests', 'Total number of index requests')
 HTTP_STATUS_COUNT = Counter('num_bad_requests', 'Count per HTTP status code', ['status'])
 REQUEST_TIME = Histogram('prediction_time', 'Total time taken to evaluate a url')
+CPU_USAGE = Gauge('cpu_usage_percent', 'Current CPU usage in percent')
+MEMORY_USAGE = Gauge('memory_usage_bytes', 'Current memory usage in bytes')
 
 
 response_url = os.environ.get("MODEL_SERVICE_URL", "http://host.docker.internal:8080/predict")
@@ -81,6 +84,8 @@ def metrics():
     """
     Defines /metrics route for Prometheus
     """
+    CPU_USAGE.set(psutil.cpu_percent())
+    MEMORY_USAGE.set(psutil.virtual_memory().used)
     return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
     
 

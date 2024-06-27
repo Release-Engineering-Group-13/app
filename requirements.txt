@@ -7,3 +7,4 @@ tensorflow==2.16.1
 REMLA-Test-Lib-version
 flask_cors
 prometheus_client==0.20.0
+psutil==6.0.0
