@@ -25,7 +25,7 @@ CPU_USAGE = Gauge('cpu_usage_percent', 'Current CPU usage in percent')
 MEMORY_USAGE = Gauge('memory_usage_bytes', 'Current memory usage in bytes')
 
 
-response_url = os.environ.get("MODEL_SERVICE_URL", "http://host.docker.internal:8080/predict")
+response_url = os.environ.get("MODEL_SERVICE_URL", "http://host.docker.internal:8080")
 
 @app.route('/get_version', methods=['GET'])
 def version():
@@ -52,7 +52,7 @@ def predict():
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     
     try:
-        response = requests.post(response_url, json=link, headers=headers, timeout=5)
+        response = requests.post(response_url + "/predict", json=link, headers=headers, timeout=5)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         status = 500
@@ -68,7 +68,7 @@ def index():
     prediction = None
     if request.method == 'POST':
         link = request.form['link']
-        response = requests.post(response_url, json={'link': link})
+        response = requests.post(response_url + "/predict", json={'link': link})
         status = response.status_code 
         HTTP_STATUS_COUNT.labels(status=status).inc()
         if status == 200:
