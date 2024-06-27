@@ -9,7 +9,7 @@ COPY js/ /usr/share/nginx/html/
 COPY css/ /usr/share/nginx/html/
 
 # set environment variables
-ENV LAYOUT="standard"
+ENV LAYOUT="colorfull"
 
 # Copy entrypoint script
 COPY entrypoint.sh /entrypoint.sh

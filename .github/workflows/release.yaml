@@ -30,6 +30,7 @@ jobs:
       - name: Build, tag, and push Docker images for frontend and backend
         run: | 
           FRONTEND_IMG=ghcr.io/${{ env.REPO_LC }}/frontend
+          FONRTEND_IMG_COLORFULL=ghcr.io/${{ env.REPO_LC }}/frontend-colorfull
           BACKEND_IMG=ghcr.io/${{ env.REPO_LC }}/backend
 
           docker build \
@@ -39,6 +40,14 @@ jobs:
             -t $FRONTEND_IMG:latest \
             -f src/app-frontend/Dockerfile src/app-frontend
           docker push --all-tags $FRONTEND_IMG
+
+          docker build \
+            -t $FONRTEND_IMG_COLORFULL:${{ env.version }} \
+            -t $FONRTEND_IMG_COLORFULL:${{ env.version_major }}.${{ env.version_minor }}.latest \
+            -t $FONRTEND_IMG_COLORFULL:${{ env.version_major }}.latest \
+            -t $FONRTEND_IMG_COLORFULL:latest \
+            -f src/app-frontend/Dockerfile.colorfull src/app-frontend
+          docker push --all-tags $FONRTEND_IMG_COLORFULL
 
           docker build \
             -t $BACKEND_IMG:${{ env.version }} \
